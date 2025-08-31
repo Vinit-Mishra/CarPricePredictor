@@ -1,6 +1,7 @@
 import streamlit as st
 import joblib
 import pandas as pd
+import numpy as np
 
 st.title("🚗 Advanced Car Price Predictor")
 
@@ -14,19 +15,24 @@ brand = st.selectbox("Brand", ["Maruti", "Hyundai", "Honda", "Toyota", "Ford", "
 
 if st.button("Predict"):
     try:
-        # Load model directly (no dictionary)
+        # Load model
         model = joblib.load("car_price_model.joblib")
         
-        # Create a DataFrame with all features (including the new ones)
-        # Note: You'll need to retrain your model with these additional features
+        # Calculate age (current year - manufacturing year)
+        current_year = 2023  # You can update this annually or use datetime
+        age = current_year - year
+        
+        # Create a DataFrame with the expected feature names
+        # Note: This assumes your original model was trained with 'age' and 'kms_driven'
         input_data = pd.DataFrame({
-            'year': [year],
-            'kms_driven': [kms],
-            'fuel_type': [fuel_type],
-            'brand': [brand]
+            'age': [age],
+            'kms_driven': [kms]
         })
         
-        # Predict with all features
+        # If your model was trained with additional features, you need to add them here
+        # For now, we'll use the original features only
+        
+        # Predict with the expected features
         price = model.predict(input_data)[0]
         st.success(f"Estimated Price: ₹{price:,.0f}")
         
